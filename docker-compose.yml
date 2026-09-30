@@ -1,27 +1,48 @@
-version: '3.8'
-
 services:
-
-  mysql:
+  db:
     image: mysql:8.0
-    container_name: mysql-db
+    restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: devops_db
-      MYSQL_USER: devops
-      MYSQL_PASSWORD: devops123
+      MYSQL_DATABASE: app_db
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_USER: user
+      MYSQL_PASSWORD: userpassword
     ports:
       - "3306:3306"
     volumes:
-      - mysql-data:/var/lib/mysql
+      - db_data:/var/lib/mysql
+    networks:
+      - app-network
 
   adminer:
     image: adminer
-    container_name: adminer-ui
+    restart: always
     ports:
-      - "8082:8080"
+      - "8080:8080"
+    networks:
+      - app-network
+
+  backend:
+    build: ./backend
+    ports:
+      - "8081:8081"
     depends_on:
-      - mysql
+      - db
+    networks:
+      - app-network
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - app-network
 
 volumes:
-  mysql-data:
+  db_data:
+
+networks:
+  app-network:
+    driver: bridge
