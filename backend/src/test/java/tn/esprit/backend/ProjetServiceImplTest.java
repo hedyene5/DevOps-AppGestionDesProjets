@@ -1,4 +1,3 @@
-```java
 package tn.esprit.backend;
 
 import org.junit.jupiter.api.Test;
@@ -125,4 +124,3 @@ class ProjetServiceImplTest {
         verify(projetRepository).findAll();
     }
 }
-```
